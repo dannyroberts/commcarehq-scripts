@@ -5,7 +5,7 @@ function generate-SQL() {
 }
 
 echo 'BEGIN;'
-grep ' ' received_on_lookup | while read line
+grep ' ' | while read line
 do
   generate-SQL $line
 done

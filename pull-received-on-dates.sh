@@ -13,4 +13,4 @@ function get-received_on() {
 get-ids | while read id
 do
   echo $id $(get-received_on $id)
-done > received_on_lookup
+done
