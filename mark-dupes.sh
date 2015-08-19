@@ -1,3 +1,7 @@
+function psql_commcarehq() {
+  psql $PSQL_ARGS commcarehq
+}
+
 function remove-header-and-footer() {
   sed 1,2d | sed '$d' | sed '$d'
 }
@@ -30,8 +34,8 @@ function pull-id-field-from-dupe-rows() {
   grep '^✗' | cut -d' ' -f2
 }
 
-psql commcarehq < select-dupe-fields.sql | remove-header-and-footer |
+psql_commcarehq < select-dupe-fields.sql | remove-header-and-footer |
   get-unique-duplicates |
   rows-to-tuple-tuple | render-sql-template-from-rows select-rows-with-ids.sql |
-  psql commcarehq | remove-header-and-footer |
+  psql_commcarehq | remove-header-and-footer |
   mark-duplicates
