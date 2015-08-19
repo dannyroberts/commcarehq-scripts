@@ -7,7 +7,7 @@ function remove-header-and-footer() {
 }
 
 function get-unique-duplicates() {
-  uniq -c | grep '^   [^1]' | cut -c7-
+  uniq -c | grep '^ *[^1 ]' | sed 's/^ *[0-9]* *//'
 }
 
 function rows-to-tuple-tuple() {
@@ -38,4 +38,5 @@ psql_commcarehq < select-dupe-fields.sql | remove-header-and-footer |
   get-unique-duplicates |
   rows-to-tuple-tuple | render-sql-template-from-rows select-rows-with-ids.sql |
   psql_commcarehq | remove-header-and-footer |
-  mark-duplicates
+  mark-duplicates |
+  cat
