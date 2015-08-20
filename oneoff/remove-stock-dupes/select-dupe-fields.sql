@@ -1,4 +1,4 @@
-select domain, case_id, product_id, section_id, date, form_id
+select domain, case_id, product_id, section_id, date, form_id, quantity, rpt.type, txn.type, subtype
 from stock_stockreport as rpt, stock_stocktransaction as txn
 where domain = 'moko' and rpt.id = txn.report_id
-order by domain, case_id, product_id, section_id, date, form_id;
+order by domain, case_id, product_id, section_id, date, form_id, quantity, rpt.type, txn.type, subtype;

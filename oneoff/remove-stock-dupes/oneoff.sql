@@ -1,0 +1,24 @@
+-- select * from stock_stockreport as rpt, stock_stocktransaction as txn limit 10;
+-- insert into stock_stockreport select * from stock_stockreport__deleted;
+-- insert into stock_stocktransaction select * from stock_stocktransaction__deleted;
+-- drop table stock_stocktransaction__deleted;
+-- drop table stock_stockreport__deleted;
+
+-- BEGIN;
+--   -- create backup table with same schema
+--   create table stock_stocktransaction__deleted as
+--   select * from stock_stocktransaction
+--   where report_id='1858799';
+--
+--   create table stock_stockreport__deleted as
+--   select * from stock_stockreport
+--   where id='1858799';
+--
+--   delete from stock_stocktransaction
+--   where report_id='1858799';
+--
+--   delete from stock_stockreport
+--   where id='1858799';
+-- END;
+
+-- select * from stock_stockreport__deleted as rpt, stock_stocktransaction__deleted as txn limit 10;

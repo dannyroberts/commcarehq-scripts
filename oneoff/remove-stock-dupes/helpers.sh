@@ -10,8 +10,12 @@ function get-unique-duplicates() {
   uniq -c | grep '^ *[^1 ]' | sed 's/^ *[0-9]* *//'
 }
 
+function unpad-psql-table() {
+  sed 's/^ *//' | sed 's/ *$//' | sed 's/ *| */|/g'
+}
+
 function rows-to-tuple-tuple() {
-  sed 's/^\(.*\)$/'"('\1')/" | sed 's/ *| */'"','/g" | python -c "import sys; print '(' + ','.join(sys.stdin.readlines()) + ')'"
+  unpad-psql-table | sed 's/^\(.*\)$/'"('\1')/" | sed "s/|/','/g" | python -c "import sys; print '(' + ','.join(sys.stdin.readlines()) + ')'"
 }
 
 function render-sql-template-from-rows() {
@@ -19,9 +23,11 @@ function render-sql-template-from-rows() {
 }
 
 function mark-duplicates() {
+  skip_columns=$1
+  f=$(python -c "print $skip_columns + 1")
   while read line
   do
-    CURRENT_LINE=$(echo $line | cut -d'|' -f2-)
+    CURRENT_LINE=$(echo $line | cut -d'|' -f$f-)
     if [[ $CURRENT_LINE = $PREV_LINE ]]
     then
       echo '✗' $line
@@ -32,6 +38,6 @@ function mark-duplicates() {
   done
 }
 
-function pull-id-field-from-dupe-rows() {
-  grep '^✗' | cut -d' ' -f2
+function pull-report-id-field-from-dupe-rows() {
+  grep '^✗' | unpad-psql-table | cut -d'|' -f2
 }
