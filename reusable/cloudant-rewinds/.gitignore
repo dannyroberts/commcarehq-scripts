@@ -1,0 +1,5 @@
+*.cache
+08-14-1045-pillow-checkpoints-quicklook.txt
+08-14-1045-pillow-checkpoints.txt
+checkpoints_to_use.txt
+pillow_checkpoint_ids
