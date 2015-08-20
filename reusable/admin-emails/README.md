@@ -14,11 +14,11 @@
   - (Log in if you aren't logged in)
 3. Inspect the request and take note of the value of the `sessionid` cookie
 
-## Clone this gist to your computer
+## Clone this repo to your computer
 
 ```bash
-git clone https://gist.github.com/1942d2cd9a9cb0b8cf27.git pull-domain-admins
-cd pull-domain-admins
+git clone https://github.com/dannyroberts/commcarehq-scripts.git
+cd commcarehq-scripts/admin-emails
 ```
 
 ## Run the script
