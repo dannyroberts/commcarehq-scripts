@@ -1,6 +1,6 @@
 # Usage:
 # $ pull-domain-admins.sh <domain> <commcarehq sessionid cookie>
-# or 
+# or
 # $ sessionid=$SESSIONID
 #   while read line
 #   do

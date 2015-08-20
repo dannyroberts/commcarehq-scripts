@@ -31,7 +31,7 @@ in the Finder)
 Then run
 
 ```
-bash pull-domain-admins.sh ${commcarehq-sessionid-cookie} < domain-list.txt | tee domain-admins.txt
+bash pull-all-domain-admins.sh ${commcarehq-sessionid-cookie} < domain-list.txt | tee domain-admins.txt
 ```
 
 but replace `${commcarehq-sessionid-cookie}` with your `sessionid` from above.
