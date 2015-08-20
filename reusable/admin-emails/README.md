@@ -1,5 +1,8 @@
 # Get domain admin emails for a list of domains
 
+## Before you start
+- Make sure you have jsawk installed (`brew install jsawk` on a Mac).
+
 ## Create your input file
 
 1. Put the domains together in a file, one domain name per line.
