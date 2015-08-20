@@ -1,0 +1,39 @@
+#!/bin/bash
+function usage() {
+  cat << EOF
+usage: up clone-gist <dir> <script_name> <gist_url>
+
+  dir may be "reusable"  or "oneoff"
+  script_name is what the script will be called within <dir>
+  gist_url should be a git clone url
+
+the gist will be subtree merged to the specified location, preserving history
+EOF
+}
+
+dir=$1
+script_name=$2
+gist_url=$3
+
+case $dir in
+"reusable"|"oneoff")
+  ;;
+help|--help)
+  usage
+  exit 0
+  ;;
+*)
+  echo "You must choose between the reusable and oneoff directories."
+  echo
+  usage
+  exit 1
+esac
+
+
+git remote add $script_name $gist_url
+git fetch $script_name
+git merge -s ours --no-commit $script_name/master
+git read-tree --prefix=$dir/$script_name -u $script_name/master
+echo "You are now read to commit these changes:"
+git status
+echo "Your gist history will be preserved"
