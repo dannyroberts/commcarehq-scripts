@@ -4,6 +4,8 @@ mkvirtualenv cloudant-rewind
 pip install -r pip-requirements.txt
 ```
 
+and install jsawk. On a Mac with Homebrew, that should be `brew install jsawk`.
+
 ## Running
 Put the doc `_id`s of the pillowtop checkpoints you want to scan
 in `pillow_checkpoint_ids`, one per line, ending with a new line.
