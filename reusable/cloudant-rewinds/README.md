@@ -35,9 +35,15 @@ The output may look something like
 60073019 GroupPillow
 ...
 ```
-The first few will have checkpoint numbers significantly smaller than the rest.
+The first few will have checkpoint numbers significantly smaller than the rest. In this example it's the first 5 that are the problem. Based on that run a command like the following
 
-Once you have your pillow ids in pillow_checkpoint_ids, run the following:
+```bash
+while read line; do echo $line | jsawk 'return this._id'; done < checkpoint_docs.txt | grep -E 'XFormPillow|FormDataPillow|CasePillow|CaseDataPillow|ReportCasePillow' > pillow_checkpoint_ids
+```
+
+to pull just the full checkpoint _ids for the pillows you want.
+
+Once you have your pillow ids in `pillow_checkpoint_ids`, run the following:
 
 ```bash
 bash find_most_recent_good_checkpoint.sh 55000000 https://commcarehq.cloudant.com/commcarehq < pillow_checkpoint_ids | tee checkpoints_to_use.txt
