@@ -13,10 +13,12 @@ in `pillow_checkpoint_ids`, one per line, ending with a new line.
 You can get an idea of which ones you want to reset
 by running the following on hqdb0.
 
+```
 In [1]: from pillowtop.utils import get_all_pillows
 
 In [2]: for pillow in get_all_pillows():
    ...:     print pillow.get_checkpoint()
+```
 
 Copy the output (one checkpoint doc per line, ending with a new line) into a file named checkpoint_docs.txt. Then run the following:
 
@@ -37,7 +39,7 @@ The output may look something like
 60073019 GroupPillow
 ...
 ```
-The first few will have checkpoint numbers significantly smaller than the rest. In this example it's the first 5 that are the problem. Based on that run a command like the following
+The first few will have checkpoint numbers significantly smaller than the rest. Those are the pillows that are in a rewind state and need to be reset to a reasonable `seq`. In this example it's the first 5 that are the problem. Based on that run a command like the following
 
 ```bash
 while read line; do echo $line | jsawk 'return this._id'; done < checkpoint_docs.txt | grep -E 'XFormPillow|FormDataPillow|CasePillow|CaseDataPillow|ReportCasePillow' > pillow_checkpoint_ids
@@ -58,3 +60,5 @@ whose sequence id is greater than 55000000. Each alternating line is
 ## Troubleshooting
 
 If it doesn't go right the first time, and you get a repeated error, this may have to do with the fact that each request is cached in a file to speed things up if you need to run this multiple times. To start with a clean slate, just run `rm *.cache`.
+
+If `find_most_recent_good_checkpoint.sh` hits an infinite loop, this may be because CouchDB cannot find a revision with that high of a sequence id (in the example it's 55000000). CouchDB regularly compacts documents and removes revisions. If this is the case, you may be able to use a `seq` id from another search. The `seq` ids are from Cloudant so can use `seq` ids from other pillows. Be careful to make sure that that pillow has indeed seen that `seq` id, else the pillow will skip documents.
