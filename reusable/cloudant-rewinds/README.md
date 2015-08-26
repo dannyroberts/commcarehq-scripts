@@ -52,3 +52,7 @@ bash find_most_recent_good_checkpoint.sh 55000000 https://commcarehq.cloudant.co
 `checkpoints_to_use.txt` will now contain the historical revisions
 whose sequence id is greater than 55000000. Each alternating line is
 (1) the doc `_id` (2) the historical revision.
+
+## Troubleshooting
+
+If it doesn't go right the first time, and you get a repeated error, this may have to do with the fact that each request is cached in a file to speed things up if you need to run this multiple times. To start with a clean slate, just run `rm *.cache`.
