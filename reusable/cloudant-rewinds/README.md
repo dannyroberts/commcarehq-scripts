@@ -13,11 +13,16 @@ in `pillow_checkpoint_ids`, one per line, ending with a new line.
 You can get an idea of which ones you want to reset
 by running the following on hqdb0.
 
-```
+```python
 In [1]: from pillowtop.utils import get_all_pillows
-
 In [2]: for pillow in get_all_pillows():
    ...:     print pillow.get_checkpoint()
+```
+or for a single pillow:
+```python
+In [1]: from pillowtop.utils import get_pillow_by_name
+In [2]: pillow = get_pillow_by_name(pillow_name)
+In [3]: print pillow.get_checkpoint()
 ```
 
 Copy the output (one checkpoint doc per line, ending with a new line) into a file named checkpoint_docs.txt. Then run the following:
