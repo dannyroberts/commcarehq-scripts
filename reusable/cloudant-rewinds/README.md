@@ -18,17 +18,11 @@ In [1]: from pillowtop.utils import get_all_pillows
 In [2]: for pillow in get_all_pillows():
    ...:     print pillow.get_checkpoint()
 ```
-or for a single pillow:
-```python
-In [1]: from pillowtop.utils import get_pillow_by_name
-In [2]: pillow = get_pillow_by_name(pillow_name)
-In [3]: print pillow.get_checkpoint()
-```
 
 Copy the output (one checkpoint doc per line, ending with a new line) into a file named checkpoint_docs.txt. Then run the following:
 
 ```bash
-while read line; do echo $line | jsawk 'return this._id + " " + this.seq'; done < checkpoint_docs.txt | sed 's/^.*\.\([A-Z][A-Za-z]*Pillow\)[^ ]* \([0-9]*\)-.*$/\2 \1/' | sort -n
+./extract_seq.py -f checkpoint_docs.txt
 ```
 
 The output may look something like
@@ -47,7 +41,7 @@ The output may look something like
 The first few will have checkpoint numbers significantly smaller than the rest. Those are the pillows that are in a rewind state and need to be reset to a reasonable `seq`. In this example it's the first 5 that are the problem. Based on that run a command like the following
 
 ```bash
-while read line; do echo $line | jsawk 'return this._id'; done < checkpoint_docs.txt | grep -E 'XFormPillow|FormDataPillow|CasePillow|CaseDataPillow|ReportCasePillow' > pillow_checkpoint_ids
+./extract_seq.py -f checkpoint_docs.txt -l5 --id_only > pillow_checkpoint_ids
 ```
 
 to pull just the full checkpoint _ids for the pillows you want.
