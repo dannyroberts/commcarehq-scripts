@@ -13,10 +13,9 @@ cat $file |
   sed -E 's:/form_data/[a-z0-9-]+:/form_data/*:' |
   sed -E 's:/uuid\:[a-z0-9-]+:/uuid\:*:' |
   sed -E 's:/[-0-9a-f]{10,}:/*:g' |
-  sed -E 's:/[0-9]+:/*:g' |
   sed 's:HTTP/1.[10] ::' |
   grep -v '^GET /static/' |
   grep -v '^quit' |
   grep -v '^G ' |
   sed 's:?[^ ]*::' |  # remove everything between '?' and ' '
-  sed 's/\ /,/g' # replace spaces with commas, export to CSV for excel and make pivot table
+  sed 's/\ \([^+]\)/,\1/g' # replace spaces with commas, export to CSV for excel and make pivot table
