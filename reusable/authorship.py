@@ -1,26 +1,24 @@
 """
-Output git authorship information about a list of files.
+Output git authorship information about a list of files.  Accepts a stream of
+filenames, like that produced by `$ git ls-files` or `$ find`.
 
 Example usage:
     $ cd path/to/repository
-    $ find . | grep "management/commands" | grep -v "__init__" | grep -v "submodules" | grep ".py$" | python path/to/authorship.py --csv
-
-TODOs:
-  How can I re.search for unicode characters?
-  How should I output a table format to the terminal?
+    $ git ls-files | grep "management/commands" | grep -v "__init__" | grep ".py$" | python path/to/authorship.py --csv
 """
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from collections import Counter, namedtuple
+from unidecode import unidecode
 import csv
 import re
 import sh
 import sys
-from collections import Counter, namedtuple
 
 LogInfo = namedtuple("LogInfo", "earliest_commit latest_commit num_commits")
 
 
 def main():
-    parser = ArgumentParser(description=__doc__)
+    parser = ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument("--csv", action="store_true", help="Dump to a csv")
     args = parser.parse_args()
 
@@ -28,13 +26,22 @@ def main():
     print "Found {} files".format(len(filenames))
     if args.csv:
         with open("authorship.csv", 'w') as f:
-            dump_info(with_progress_bar(filenames), f)
+            writer = csv.writer(f)
+            for row in with_progress_bar(get_rows(filenames), len(filenames)):
+                writer.writerow(row)
     else:
-        dump_info(filenames, sys.stdout)
+        for filename, commits, first, last, authors in get_rows(filenames):
+            if len(filename) > 60:
+                filename = "...{}".format(filename[-57:])
+            print "{:<60} {:>10} {:^14}{:^14} {}".format(
+                filename, commits, first, last, authors)
 
 
 def parse_author(output):
-    return re.search(r"[(]([a-zA-Z ]+)\s*20\d{2}", output).groups()[0].strip()
+    match = re.search(r"[(]([\w ]+)\s*20\d{2}", output, re.UNICODE)
+    if not match:
+        return
+    return unidecode(match.groups()[0].strip())
 
 
 def get_authors(filename):
@@ -43,13 +50,13 @@ def get_authors(filename):
     author_counts = sorted(Counter(author_by_line).items(),
                            key=lambda (author, count): count,
                            reverse=True)
-    return " - ".join("{} ({})".format(name, count)
+    return " - ".join(u"{} ({})".format(name, count)
                       for name, count in author_counts)
 
 
 def get_log_info(filename):
-    raw_output = sh.git.log("--pretty=%ad", "--date=short", filename,
-                            _env={'PAGER': '/bin/cat'})
+    raw_output = sh.git.log("--pretty=%ad", "--date=short", "--since=2010-09-10",
+                            filename, _env={'PAGER': '/bin/cat'})
     dates = sorted(raw_output.split())
     return LogInfo(
         earliest_commit=dates[0],
@@ -69,22 +76,19 @@ def get_row(filename):
     )
 
 
-def dump_info(filenames, fileobj):
-    writer = csv.writer(fileobj)
-    writer.writerow([
+def get_rows(filenames):
+    yield [
         "File Name",
         "Commits",
         "First Commit",
         "Last Commit",
         "Authors",
-    ])
+    ]
     for filename in filenames:
-        # print filename
-        writer.writerow(get_row(filename))
+        yield get_row(filename)
 
 
-def with_progress_bar(iterable):
-    length = len(iterable)
+def with_progress_bar(iterable, length):
     checkpoints = {length*i/30 for i in range(length)}
     print 'Starting [' + ' '*30 + ']',
     print '\b'*32,
