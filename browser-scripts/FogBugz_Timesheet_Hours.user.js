@@ -12,7 +12,7 @@ function main() {
         function date(value) {
             return new Date(TODAY + " " + value);
         }
-        var NOW = new Date(),
+        var NOW = new CTZNow(),
             TODAY = NOW.toDateString(),
             MINUTE = 60000,
             totalMinutes = 0,
