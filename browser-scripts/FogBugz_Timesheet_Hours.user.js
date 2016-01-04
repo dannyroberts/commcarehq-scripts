@@ -2,7 +2,7 @@
 // @name        FogBugz Timesheet Hours
 // @namespace   fb-ts-hours
 // @description Calculate and display hours worked on FogBugz timesheet popup.
-//              https://gist.github.com/millerdev/96c9b824b8902d4a5c19
+//              https://github.com/dimagi/commcarehq-scripts/blob/master/browser-scripts/FogBugz_Timesheet_Hours.user.js
 // @include     http://manage.dimagi.com/*
 // @version     1
 // @grant       none
