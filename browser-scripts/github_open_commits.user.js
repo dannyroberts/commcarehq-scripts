@@ -14,6 +14,7 @@ $(document).ready(function() {
         hrefs.push($(this).prop('href'))
     });
 
+    hrefs.reverse();
     $('.discussion-item-header').first().append('<input type="button" value="Open All Commits" id="CP">')
     $('#CP').css('float', 'right').addClass('btn').addClass('btn-sm');
     $('#CP').click(function(){ 
