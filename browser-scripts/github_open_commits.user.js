@@ -2,7 +2,7 @@
 // @name         GitHub open commits in tabs
 // @namespace    github_open_commits
 // @version      1
-// @description  Open all commits in a PR in new tabs. https://github.com/dimagi/commcarehq-scripts/blob/master/browser-scripts/FogBugz_Timesheet_Hours.user.js
+// @description  Open all commits in a PR in new tabs.
 // @include      https://github.com/*/*/pull/*
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @grant        GM_openInTab
