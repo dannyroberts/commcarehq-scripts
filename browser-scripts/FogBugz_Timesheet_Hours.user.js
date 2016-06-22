@@ -91,6 +91,13 @@ function main() {
         return true;
     });
 
+    // Automatically click the "Schedule Items" dropdown
+    $("#Menu_Working_On").click(function () {
+        if ($("#idWorkingOnScheduleItem").css("display") === "none") {
+            toggleWorkingOnCollapsible('idWorkingOnScheduleItem');
+        }
+    });
+
 }
 
 window.addEventListener('load', function() {
