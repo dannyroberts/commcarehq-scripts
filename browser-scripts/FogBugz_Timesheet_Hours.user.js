@@ -4,6 +4,7 @@
 // @description Calculate and display hours worked on FogBugz timesheet popup.
 //              https://github.com/dimagi/commcarehq-scripts/blob/master/browser-scripts/FogBugz_Timesheet_Hours.user.js
 // @include     http://manage.dimagi.com/*
+// @include     https://manage.dimagi.com/*
 // @version     2
 // @grant       none
 // ==/UserScript==
