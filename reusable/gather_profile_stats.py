@@ -2,43 +2,44 @@
 
 """
 gather_profile_stats.py /path/to/dir/of/profiles
-Note that the aggregated profiles must be read with pstats.Stats, not
-hotshot.stats (the formats are incompatible)
+Only works with cProfile stats
 """
-
-from hotshot import stats
+import glob
 import os
 import pstats
-import sys
+import argparse
 
 
-def gather_stats(p):
-    profiles = {}
-    for f in os.listdir(p):
-        if f.endswith('.agg.prof'):
-            path = f[:-9]
-            prof = pstats.Stats(os.path.join(p, f))
-        elif f.endswith('.prof'):
-            bits = f.split('-')
-            path = "-".join(bits[:-3])
-            try:
-                prof = stats.load(os.path.join(p, f))
-            except Exception as e:
-                print("Error processing file: {} ({})".format(f, e))
-                continue
-        else:
-            continue
-        print("Processing %s" % f)
-        if path in profiles:
-            profiles[path].add(prof)
-        else:
-            profiles[path] = prof
-        os.unlink(os.path.join(p, f))
-    for path, prof in profiles.items():
-        output = "%s.agg.prof" % path
-        print("Writing output to %s" % output)
-        prof.dump_stats(os.path.join(p, output))
+def gather_stats(search_path, patterns=None, output=None, delete=False):
+    paths = []
+    output = output or os.path.join(search_path, 'aggregate_profile.prof')
+
+    for pattern in patterns:
+        for path in glob.glob1(search_path, pattern):
+            paths.append(os.path.join(search_path, path))
+
+    if output in paths:
+        print("Output file included in matching input files. Use '--output' to specify a different output file path.")
+        return
+
+    print('Processing paths: {}'.format('\n'.join(paths)))
+    prof = pstats.Stats(*paths)
+
+    if delete:
+        for path in paths:
+            os.unlink(path)
+
+    print("Writing output to %s" % output)
+    prof.dump_stats(output)
 
 
 if __name__ == '__main__':
-    gather_stats(sys.argv[1])
+    parser = argparse.ArgumentParser(description='Aggregate cProfile dumps')
+    parser.add_argument('path', help="Path to look for profile files")
+    parser.add_argument('-p', '--pattern', nargs='+', default=['*.prof'],
+                        help="Glob patterns to use to match files. Defaults to '*.prof'")
+    parser.add_argument('-o', '--output', help='Store the result in this output file')
+    parser.add_argument('--delete', action='store_true', help='Delete files once processed')
+
+    args = parser.parse_args()
+    gather_stats(args.path, patterns=args.pattern, output=args.output, delete=args.delete)

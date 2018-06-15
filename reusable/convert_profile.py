@@ -2,36 +2,31 @@
 """
 Convert profile file such as that produced by `dimagi.utils.decorators.profile`
 to a human-readable text file.
-
-Pulled from https://gist.github.com/czue/4947238
 """
-
-import hotshot.stats
+import argparse
 import pstats
-import sys
 
 DEFAULT_LIMIT = 200
 
 
-def profile(filename, limit=DEFAULT_LIMIT):
-    outfile = filename + ".txt"
-    with open(outfile, 'w') as f:
+def profile(filename, limit=DEFAULT_LIMIT, output=None, print_callers=False):
+    output = output or filename + ".txt"
+    with open(output, 'w') as f:
         print("loading profile stats for %s" % filename)
-        if filename.endswith('.agg.prof'):
-            stats = pstats.Stats(filename, stream=f)
-        else:
-            stats = hotshot.stats.load(filename)
-            stats.stream = f
+        stats = pstats.Stats(filename, stream=f)
 
-        # normal stats
         stats.sort_stats('cumulative', 'calls').print_stats(limit)
-        stats.print_callers(limit)
+        if print_callers:
+            stats.print_callers(limit)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("please pass in a filename.")
-        sys.exit()
-    filename = sys.argv[1]
-    limit = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_LIMIT
-    profile(filename, limit)
+    parser = argparse.ArgumentParser(description='Convert profile to readable format')
+    parser.add_argument('path', help="Path to profile file")
+    parser.add_argument('-l', '--limit', type=int, default=DEFAULT_LIMIT, help='Limit the number of output lines')
+    parser.add_argument('-c', '--callers', action='store_true', help='Also print the callers list')
+    parser.add_argument('-o', '--output', help='Store the result in this output file')
+
+    args = parser.parse_args()
+
+    profile(args.path, args.limit, args.output, args.callers)
