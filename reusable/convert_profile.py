@@ -16,7 +16,7 @@ DEFAULT_LIMIT = 200
 def profile(filename, limit=DEFAULT_LIMIT):
     outfile = filename + ".txt"
     with open(outfile, 'w') as f:
-        print "loading profile stats for %s" % filename
+        print("loading profile stats for %s" % filename)
         if filename.endswith('.agg.prof'):
             stats = pstats.Stats(filename, stream=f)
         else:
@@ -30,7 +30,7 @@ def profile(filename, limit=DEFAULT_LIMIT):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "please pass in a filename."
+        print("please pass in a filename.")
         sys.exit()
     filename = sys.argv[1]
     limit = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_LIMIT
