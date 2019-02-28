@@ -5,6 +5,7 @@
 // @author      esoergel
 // @include     http://travis-ci.org/*/builds/*
 // @include     https://travis-ci.org/*/builds/*
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 // @grant       none
 // ==/UserScript==
 
